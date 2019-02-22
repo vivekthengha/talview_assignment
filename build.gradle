@@ -25,3 +25,8 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    BASE_URL = "https://newsapi.org/v2/";
+    API_KEY = "57aa1d2586d047af89bae35de9665fed";
+}
