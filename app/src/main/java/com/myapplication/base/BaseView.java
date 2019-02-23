@@ -8,8 +8,8 @@ import com.myapplication.network.FailureResponse;
 
 public interface BaseView {
     void showNoNetworkError();
-    void showToastLong(String message);
+    void showSnackbarLong(String message);
     void showSpecificError(FailureResponse failureResponse);
-    void showProgressDialog();
-    void hideProgressDialog();
+    void showLoadingBar();
+    void hideLoadingBar();
 }

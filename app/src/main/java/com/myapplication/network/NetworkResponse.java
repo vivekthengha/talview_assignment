@@ -34,7 +34,7 @@ public abstract class NetworkResponse<T> extends DisposableSingleObserver<Respon
         if(t instanceof SocketTimeoutException || t instanceof UnknownHostException){
             handler.onNetworkError();
         }
-        onError(t);
+        onSpecificError(t);
     }
 
     @Override
@@ -53,7 +53,7 @@ public abstract class NetworkResponse<T> extends DisposableSingleObserver<Respon
 
     @Override
     public void onError(Throwable t) {
-        onSpecificError(t);
+        error(t);
     }
 
     /**

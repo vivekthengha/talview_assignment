@@ -13,6 +13,7 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 
 /**
  * Data access object class to be used for accessing data from database.
@@ -36,7 +37,7 @@ public interface PostDao {
      * @return the user from the table
      */
     @Query("SELECT * FROM Albums")
-    Flowable<List<Post>> getPosts();
+    Maybe<List<Post>> getPosts();
 
 
  /**

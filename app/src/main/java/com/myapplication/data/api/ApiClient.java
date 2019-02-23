@@ -9,6 +9,7 @@ import java.util.List;
 
 import io.reactivex.Single;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -20,7 +21,7 @@ interface ApiClient {
      * @return will return list of posts in single emission
      */
     @GET("posts")
-    Single<List<Post>> fetchPosts();
+    Single<Response<List<Post>>> fetchPosts();
 
      /**
      * api to fetch posts from server
@@ -42,6 +43,5 @@ interface ApiClient {
      */
     @GET("albums/{albumId}/photos")
     Single<List<AlbumDetail>> fetchAlbumDetails(@Path("album_id") int albumId);
-
 
 }

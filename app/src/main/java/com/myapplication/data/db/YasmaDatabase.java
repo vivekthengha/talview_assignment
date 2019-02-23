@@ -20,8 +20,9 @@ public abstract class YasmaDatabase extends RoomDatabase {
     private static volatile YasmaDatabase INSTANCE;
 
     public abstract PostDao postDao();
+    public abstract AlbumDao albumDao();
 
-    public static RoomDatabase getInstance(Context context) {
+    public static YasmaDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (RoomDatabase.class) {
                 if (INSTANCE == null) {

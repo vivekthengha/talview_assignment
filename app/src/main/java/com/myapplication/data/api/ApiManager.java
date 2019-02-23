@@ -2,12 +2,19 @@ package com.myapplication.data.api;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.myapplication.BuildConfig;
+import com.myapplication.data.model.Album;
+import com.myapplication.data.model.AlbumDetail;
+import com.myapplication.data.model.Post;
+import com.myapplication.data.model.PostComments;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Single;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -18,7 +25,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiManager {
 
     private static int REQUEST_TIMEOUT = 60;
-    private static OkHttpClient okHttpClient;
 
     private static final ApiManager instance = new ApiManager();
     private final ApiClient apiClient;
@@ -43,7 +49,7 @@ public class ApiManager {
 
         httpClient.addInterceptor(interceptor);
 
-        okHttpClient = httpClient.build();
+        OkHttpClient okHttpClient = httpClient.build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .client(okHttpClient)
@@ -53,6 +59,22 @@ public class ApiManager {
                 .build();
 
         return retrofit.create(ApiClient.class);
+    }
+
+    public Single<Response<List<Post>>> fetchPosts() {
+        return apiClient.fetchPosts();
+    }
+
+    public Single<List<PostComments>> fetchComments(int postId) {
+        return apiClient.fetchComments(postId);
+    }
+
+    public Single<List<Album>> fetchAlbums() {
+        return apiClient.fetchAlbums();
+    }
+
+    public Single<List<AlbumDetail>> fetchAlbumDetails(int albumId) {
+        return apiClient.fetchAlbumDetails(albumId);
     }
 
 }
