@@ -35,7 +35,7 @@ interface ApiClient {
      * @return will return list of albums in single emission
      */
     @GET("albums")
-    Single<List<Album>> fetchAlbums();
+    Single<Response<List<Album>>> fetchAlbums();
 
      /**
      * api to fetch albums from server

@@ -1,4 +1,4 @@
-package com.myapplication.home.post_fragment;
+package com.myapplication.home.posts_fragment;
 
 import com.myapplication.base.BaseView;
 import com.myapplication.data.model.Post;

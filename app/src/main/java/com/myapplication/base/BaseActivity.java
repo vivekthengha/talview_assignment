@@ -50,7 +50,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
     @Override
     public void showSnackbarLong(String message) {
-        Snackbar.make(setSnackView(),message,Snackbar.LENGTH_LONG).show();
+        Snackbar.make(setSnackView(),message,Snackbar.LENGTH_SHORT).show();
     }
 
     /**
@@ -65,6 +65,16 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     public void showSpecificError(FailureResponse failureResponse) {
         String message = (failureResponse != null) ? failureResponse.getMsg() : getString(R.string.something_went_wrong);
         showSnackbarLong(message);
+    }
+
+    @Override
+    public void showLoadingBar() {
+        //todo show loading bar if required
+    }
+
+    @Override
+    public void hideLoadingBar() {
+        //todo hide loading bar if required
     }
 
 }

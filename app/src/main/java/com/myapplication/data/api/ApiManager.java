@@ -69,7 +69,7 @@ public class ApiManager {
         return apiClient.fetchComments(postId);
     }
 
-    public Single<List<Album>> fetchAlbums() {
+    public Single<Response<List<Album>>> fetchAlbums() {
         return apiClient.fetchAlbums();
     }
 

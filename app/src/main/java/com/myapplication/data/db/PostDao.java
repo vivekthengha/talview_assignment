@@ -28,7 +28,7 @@ public interface PostDao {
      * @param posts the user to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    Completable insertPosts(List<Post> posts);
+    void insertPosts(List<Post> posts);
 
     /**
      * Get the album posts list from the table. This query gets all the posts list from the table.
@@ -36,7 +36,7 @@ public interface PostDao {
      *
      * @return the user from the table
      */
-    @Query("SELECT * FROM Albums")
+    @Query("SELECT * FROM POSTS")
     Maybe<List<Post>> getPosts();
 
 
@@ -46,7 +46,7 @@ public interface PostDao {
      * @param posts the user to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    Completable insertPostComments(List<PostComments> posts);
+    void insertPostComments(List<PostComments> posts);
 
     /**
      * Get the album post comments list from the table. This query gets all the comments for particular posts from the table.
@@ -55,6 +55,6 @@ public interface PostDao {
      * @return the user from the table
      */
     @Query("SELECT * FROM PostComments")
-    Flowable<List<PostComments>> getPostComments();
+    Maybe<List<PostComments>> getPostComments();
 
 }

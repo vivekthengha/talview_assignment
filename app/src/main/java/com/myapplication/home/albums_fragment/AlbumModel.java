@@ -1,8 +1,9 @@
-package com.myapplication.home.post_fragment;
+package com.myapplication.home.albums_fragment;
 
 import android.util.Log;
 
 import com.myapplication.base.BaseModel;
+import com.myapplication.data.model.Album;
 import com.myapplication.data.model.Post;
 import com.myapplication.network.FailureResponse;
 import com.myapplication.network.NetworkResponse;
@@ -11,16 +12,14 @@ import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
 
-public class PostModel extends BaseModel<PostModelListener>{
-    private static final String TAG = "PostModel";
+public class AlbumModel extends BaseModel<AlbumModelListener>{
+    private static final String TAG = "AlbumModel";
 
     private CompositeDisposable compositeDisposable;
 
-    public PostModel(PostModelListener listener) {
+    public AlbumModel(AlbumModelListener listener) {
         super(listener);
     }
 
@@ -35,12 +34,12 @@ public class PostModel extends BaseModel<PostModelListener>{
     }
 
     public void fetchPosts(){
-        compositeDisposable.add(getDataManager().fetchPosts().subscribeOn(Schedulers.io())
+        compositeDisposable.add(getDataManager().fetchAlbums().subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribeWith(new NetworkResponse<List<Post>>(this) {
+                                        .subscribeWith(new NetworkResponse<List<Album>>(this) {
                                             @Override
-                                            public void onResponse(List<Post> postList) {
-                                                getListener().onPostsFetched(postList);
+                                            public void onResponse(List<Album> postList) {
+                                                getListener().onAlbumsFetched(postList);
                                             }
 
                                             @Override

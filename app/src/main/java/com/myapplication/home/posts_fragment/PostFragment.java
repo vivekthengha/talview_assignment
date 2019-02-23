@@ -1,10 +1,12 @@
-package com.myapplication.home.post_fragment;
+package com.myapplication.home.posts_fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,20 +21,18 @@ import com.myapplication.data.model.Post;
 import com.myapplication.home.HomeActivity;
 import com.myapplication.network.FailureResponse;
 
-import org.reactivestreams.Subscription;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.FlowableSubscriber;
 import io.reactivex.MaybeObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class PostFragment extends BaseFragment implements PostView {
+public class PostFragment extends Fragment implements PostView, PostAdapter.PostItemSelectedListener {
 
     @BindView(R.id.rv_posts)
     RecyclerView rvPosts;
@@ -41,6 +41,14 @@ public class PostFragment extends BaseFragment implements PostView {
     Unbinder unbinder;
 
     private PostFragmentInteractionListener listener;
+    private PostPresenter postPresenter;
+    private PostAdapter postAdapter;
+    private List<Post> postList = new ArrayList<>();
+
+    public static PostFragment getInstance() {
+        PostFragment postFragment = new PostFragment();
+        return postFragment;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -56,36 +64,56 @@ public class PostFragment extends BaseFragment implements PostView {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_posts, container, false);
         unbinder = ButterKnife.bind(this, view);
+        setUpRecyclerView();
+        postPresenter = new PostPresenter(this);
+        postPresenter.fetchPosts();
         return view;
     }
 
-    @SuppressLint("CheckResult")
+    private void setUpRecyclerView() {
+        postAdapter = new PostAdapter(postList, this);
+        rvPosts.setNestedScrollingEnabled(true);
+        rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvPosts.setHasFixedSize(true);
+        rvPosts.setAdapter(postAdapter);
+    }
+
     @Override
     public void onPostsFetched(List<Post> postList) {
+        PostFragment.this.postList.clear();
+        PostFragment.this.postList.addAll(postList);
+        postAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showNoNetworkError() {
+        hideLoadingBar();
         YasmaDatabase.getInstance(YasmaApplication.getInstance()).postDao().getPosts()
                 .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new MaybeObserver<List<Post>>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new MaybeObserver<List<Post>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-                            }
+                    }
 
-                            @Override
-                            public void onSuccess(List<Post> postList) {
+                    @Override
+                    public void onSuccess(List<Post> postList) {
+                        PostFragment.this.postList.clear();
+                        PostFragment.this.postList.addAll(postList);
+                        postAdapter.notifyDataSetChanged();
+                    }
 
-                            }
+                    @Override
+                    public void onError(Throwable e) {
 
-                            @Override
-                            public void onError(Throwable e) {
+                    }
 
-                            }
+                    @Override
+                    public void onComplete() {
 
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
+                    }
+                });
     }
 
     @Override
@@ -116,8 +144,18 @@ public class PostFragment extends BaseFragment implements PostView {
         unbinder.unbind();
     }
 
+    @Override
+    public void onPostSelected(Post post) {
+
+    }
+
     public interface PostFragmentInteractionListener {
         void showSnackBar(String message);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        postPresenter.destroy();
+    }
 }

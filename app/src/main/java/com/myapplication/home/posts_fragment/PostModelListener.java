@@ -1,6 +1,4 @@
-package com.myapplication.home.post_fragment;
-
-import android.support.v7.view.menu.BaseMenuPresenter;
+package com.myapplication.home.posts_fragment;
 
 import com.myapplication.base.BaseModelListener;
 import com.myapplication.data.model.Post;

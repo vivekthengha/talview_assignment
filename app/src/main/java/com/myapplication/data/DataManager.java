@@ -44,7 +44,7 @@ public class DataManager implements IDataManager {
     }
 
     @Override
-    public Single<List<Album>> fetchAlbums() {
+    public Single<Response<List<Album>>> fetchAlbums() {
         return apiManager.fetchAlbums();
     }
 
