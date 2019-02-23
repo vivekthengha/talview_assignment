@@ -7,6 +7,7 @@ import android.arch.persistence.room.Query;
 
 import com.myapplication.data.model.Album;
 import com.myapplication.data.model.Post;
+import com.myapplication.data.model.PostComments;
 
 import java.util.List;
 
@@ -36,5 +37,23 @@ public interface PostDao {
      */
     @Query("SELECT * FROM Albums")
     Flowable<List<Post>> getPosts();
+
+
+ /**
+     * Insert post comments list in the database. If the comments already exists, replace it.
+     *
+     * @param posts the user to be inserted.
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    Completable insertPostComments(List<PostComments> posts);
+
+    /**
+     * Get the album post comments list from the table. This query gets all the comments for particular posts from the table.
+     * Flowable is used to emit data whenever there is change in data
+     *
+     * @return the user from the table
+     */
+    @Query("SELECT * FROM PostComments")
+    Flowable<List<PostComments>> getPostComments();
 
 }
