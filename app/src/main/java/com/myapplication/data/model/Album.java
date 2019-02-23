@@ -10,10 +10,10 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "Albums")
 public class Album {
-    @PrimaryKey
     @SerializedName("userId")
     @Expose
     private Integer userId;
+    @PrimaryKey
     @SerializedName("id")
     @Expose
     private Integer id;

@@ -8,12 +8,13 @@ import android.content.Context;
 import com.myapplication.data.model.Album;
 import com.myapplication.data.model.AlbumDetail;
 import com.myapplication.data.model.Post;
+import com.myapplication.data.model.PostComments;
 
 /**
  * The Room database that contains the Posts table and Albums table
  */
 
-@Database(entities = {Post.class, Album.class, AlbumDetail.class}, version = 1)
+@Database(entities = {Post.class, Album.class, AlbumDetail.class, PostComments.class}, version = 1)
 public abstract class YasmaDatabase extends RoomDatabase {
 
     private static volatile YasmaDatabase INSTANCE;
