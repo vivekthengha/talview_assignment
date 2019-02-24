@@ -19,7 +19,7 @@ import retrofit2.http.Path;
 
 interface IDataManager {
     Single<Response<List<Post>>> fetchPosts();
-    Single<List<PostComments>> fetchComments(int postId);
+    Single<Response<List<PostComments>>> fetchComments(int postId);
     Single<Response<List<Album>>> fetchAlbums();
-    Single<List<AlbumDetail>> fetchAlbumDetails(int albumId);
+    Single<Response<List<AlbumDetail>>> fetchAlbumDetails(int albumId);
 }

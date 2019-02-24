@@ -14,7 +14,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class PostModel extends BaseModel<PostModelListener>{
-    private static final String TAG = "AlbumModel";
+    private static final String TAG = "PostModel";
 
     private CompositeDisposable compositeDisposable;
 
