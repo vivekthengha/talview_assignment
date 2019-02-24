@@ -39,7 +39,7 @@ public class DataManager implements IDataManager {
     }
 
     @Override
-    public Single<List<PostComments>> fetchComments(int postId) {
+    public Single<Response<List<PostComments>>> fetchComments(int postId) {
         return apiManager.fetchComments(postId);
     }
 
@@ -49,7 +49,7 @@ public class DataManager implements IDataManager {
     }
 
     @Override
-    public Single<List<AlbumDetail>> fetchAlbumDetails(int albumId) {
+    public Single<Response<List<AlbumDetail>>> fetchAlbumDetails(int albumId) {
         return apiManager.fetchAlbumDetails(albumId);
     }
 }

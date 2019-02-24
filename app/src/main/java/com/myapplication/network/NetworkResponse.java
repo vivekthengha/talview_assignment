@@ -25,16 +25,19 @@ public abstract class NetworkResponse<T> extends DisposableSingleObserver<Respon
     public abstract void onResponse(T body);
     public abstract void onFailure(int code, FailureResponse failureResponse);
     public abstract void onSpecificError(Throwable t);
+    public abstract void onNetworkError();
 
     protected void failure(int code, FailureResponse failureResponse){
         onFailure(code, failureResponse);
     }
 
-    protected void error(Throwable t){
-        if(t instanceof SocketTimeoutException || t instanceof UnknownHostException){
+    protected void error(Throwable t) {
+        if (t instanceof SocketTimeoutException || t instanceof UnknownHostException) {
             handler.onNetworkError();
+            onNetworkError();
+        } else {
+            onSpecificError(t);
         }
-        onSpecificError(t);
     }
 
     @Override

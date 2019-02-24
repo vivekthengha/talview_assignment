@@ -1,4 +1,4 @@
-package com.myapplication.home.posts_fragment;
+package com.myapplication.album_details;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
@@ -6,9 +6,11 @@ import android.util.Log;
 import com.myapplication.YasmaApplication;
 import com.myapplication.base.BaseModel;
 import com.myapplication.data.db.YasmaDatabase;
-import com.myapplication.data.model.Post;
+import com.myapplication.data.model.AlbumDetail;
+import com.myapplication.data.model.PostComments;
 import com.myapplication.network.FailureResponse;
 import com.myapplication.network.NetworkResponse;
+import com.myapplication.post_details.PostDetailsModelListener;
 
 import java.util.List;
 
@@ -21,12 +23,13 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
-public class PostModel extends BaseModel<PostModelListener> {
-    private static final String TAG = "PostModel";
+public class AlbumDetailsModel extends BaseModel<AlbumDetailsModelListener> {
+
+    private static final String TAG = "PostDetailsModel";
 
     private CompositeDisposable compositeDisposable;
 
-    public PostModel(PostModelListener listener) {
+    public AlbumDetailsModel(AlbumDetailsModelListener listener) {
         super(listener);
     }
 
@@ -35,18 +38,14 @@ public class PostModel extends BaseModel<PostModelListener> {
         compositeDisposable = new CompositeDisposable();
     }
 
-    @Override
-    public void dispose() {
-        compositeDisposable.clear();
-    }
-
-    public void fetchPosts() {
-        compositeDisposable.add(getDataManager().fetchPosts().subscribeOn(Schedulers.io())
+    @SuppressLint("CheckResult")
+    public void fetchAlbumDetails(final int albumId) {
+        compositeDisposable.add(getDataManager().fetchAlbumDetails(albumId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new NetworkResponse<List<Post>>(this) {
+                .subscribeWith(new NetworkResponse<List<AlbumDetail>>(this) {
                     @Override
-                    public void onResponse(List<Post> postList) {
-                        insertPostsInDb(postList);
+                    public void onResponse(List<AlbumDetail> albumDetailList) {
+                        insertIntoDb(albumDetailList, albumId);
                     }
 
                     @Override
@@ -62,20 +61,26 @@ public class PostModel extends BaseModel<PostModelListener> {
 
                     @Override
                     public void onNetworkError() {
-                        fetchPostFromDb();
+                        this.dispose();
+                        fetchCommentsFromDatabase(albumId);
                     }
                 }));
-
     }
 
-    private void insertPostsInDb(final List<Post> postList) {
+    @Override
+    public void dispose() {
+        compositeDisposable.clear();
+    }
+
+    public void insertIntoDb(final List<AlbumDetail> albumDetailList, final int albumId) {
         Completable.fromAction(new Action() {
             @Override
             public void run() throws Exception {
-                YasmaDatabase.getInstance(YasmaApplication.getInstance()).postDao()
-                        .insertPosts(postList);
+                YasmaDatabase.getInstance(YasmaApplication.getInstance()).albumDao()
+                        .insertAlbumDetails(albumDetailList);
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -85,21 +90,21 @@ public class PostModel extends BaseModel<PostModelListener> {
 
                     @Override
                     public void onComplete() {
-                        fetchPostFromDb();
+                        fetchCommentsFromDatabase(albumId);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+
                     }
                 });
     }
 
-    @SuppressLint("CheckResult")
-    private void fetchPostFromDb() {
-        YasmaDatabase.getInstance(YasmaApplication.getInstance()).postDao().getPosts()
+    void fetchCommentsFromDatabase(int albumId) {
+        YasmaDatabase.getInstance(YasmaApplication.getInstance()).albumDao().getAlbumDetails(albumId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new MaybeObserver<List<Post>>() {
+                .subscribe(new MaybeObserver<List<AlbumDetail>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         if (d != null)
@@ -107,21 +112,20 @@ public class PostModel extends BaseModel<PostModelListener> {
                     }
 
                     @Override
-                    public void onSuccess(List<Post> postList) {
-                        getListener().onPostsFetched(postList);
+                    public void onSuccess(List<AlbumDetail> albumDetailList) {
+                        getListener().onAlbumDetailsFetched(albumDetailList);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.d("No", "no network");
                     }
 
                     @Override
                     public void onComplete() {
-
+                        Log.d("No", "complete");
                     }
                 });
-
     }
 
 }

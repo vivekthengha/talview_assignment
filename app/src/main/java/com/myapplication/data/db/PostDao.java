@@ -14,6 +14,7 @@ import java.util.List;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 /**
  * Data access object class to be used for accessing data from database.
@@ -54,7 +55,7 @@ public interface PostDao {
      *
      * @return the user from the table
      */
-    @Query("SELECT * FROM PostComments")
-    Maybe<List<PostComments>> getPostComments();
+    @Query("SELECT * FROM PostComments WHERE postId = :postId")
+    Maybe<List<PostComments>> getPostComments(int postId);
 
 }

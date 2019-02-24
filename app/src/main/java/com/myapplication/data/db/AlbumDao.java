@@ -53,7 +53,7 @@ public interface AlbumDao {
      *
      * @return the user from the table
      */
-    @Query("SELECT * FROM AlbumDetails")
-    Maybe<List<AlbumDetail>> getAlbumDetails();
+    @Query("SELECT * FROM AlbumDetails WHERE albumId = :albumId")
+    Maybe<List<AlbumDetail>> getAlbumDetails(int albumId);
 
 }

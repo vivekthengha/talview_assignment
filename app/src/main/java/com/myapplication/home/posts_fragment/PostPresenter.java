@@ -2,6 +2,7 @@ package com.myapplication.home.posts_fragment;
 
 import android.annotation.SuppressLint;
 
+import com.myapplication.R;
 import com.myapplication.YasmaApplication;
 import com.myapplication.base.BasePresenter;
 import com.myapplication.data.db.YasmaDatabase;
@@ -40,38 +41,19 @@ public class PostPresenter extends BasePresenter<PostView> implements PostModelL
         postModel = null;
     }
 
-    @SuppressLint("CheckResult")
     @Override
-    public void onPostsFetched(final List<Post> postList) {
-        Completable.fromAction(new Action() {
-            @Override
-            public void run() throws Exception {
-                YasmaDatabase.getInstance(YasmaApplication.getInstance()).postDao()
-                        .insertPosts(postList);
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposable = d;
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        getView().hideLoadingBar();
-                        getView().onPostsFetched(postList);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().hideLoadingBar();
-                    }
-                });
+    public void onPostsFetched(List<Post> postList) {
+        getView().hideLoadingBar();
+       getView().onPostsFetched(postList);
     }
 
     public void fetchPosts() {
-        getView().showLoadingBar();
         postModel.fetchPosts();
     }
 
+    @Override
+    public void noNetworkError() {
+        super.noNetworkError();
+        getView().showSnackbarLong(YasmaApplication.getInstance().getString(R.string.no_network_error));
+    }
 }

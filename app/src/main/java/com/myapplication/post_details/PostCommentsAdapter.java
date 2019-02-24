@@ -39,6 +39,12 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
         return postCommentsList.size();
     }
 
+    public void addComments(List<PostComments> postCommentsList) {
+        this.postCommentsList.clear();
+        this.postCommentsList.addAll(postCommentsList);
+        notifyDataSetChanged();
+    }
+
     class PostCommentsViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_name)
         TextView tvName;

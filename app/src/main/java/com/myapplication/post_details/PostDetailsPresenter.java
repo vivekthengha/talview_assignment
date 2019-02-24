@@ -1,13 +1,9 @@
-package com.myapplication.home.albums_fragment;
+package com.myapplication.post_details;
 
-import android.annotation.SuppressLint;
-
-import com.myapplication.R;
 import com.myapplication.YasmaApplication;
 import com.myapplication.base.BasePresenter;
 import com.myapplication.data.db.YasmaDatabase;
-import com.myapplication.data.model.Album;
-import com.myapplication.data.model.Post;
+import com.myapplication.data.model.PostComments;
 
 import java.util.List;
 
@@ -18,44 +14,43 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
-public class AlbumPresenter extends BasePresenter<AlbumView> implements AlbumModelListener {
+public class PostDetailsPresenter extends BasePresenter<PostDetailsView> implements PostDetailsModelListener{
 
-    private AlbumModel albumModel;
+    private PostDetailsModel postDetailsModel;
     private Disposable disposable;
 
-    public AlbumPresenter(AlbumView view) {
+    PostDetailsPresenter(PostDetailsView view) {
         super(view);
     }
 
     @Override
     protected void setModel() {
-        albumModel = new AlbumModel(this);
-        albumModel.init();
+        postDetailsModel = new PostDetailsModel(this);
+        postDetailsModel.init();
     }
 
     @Override
     protected void destroy() {
-        albumModel.detachListener();
-        albumModel.dispose();
+        postDetailsModel.detachListener();
+        postDetailsModel.dispose();
         if (disposable != null)
             disposable.dispose();
-        albumModel = null;
+        postDetailsModel = null;
     }
 
     @Override
-    public void onAlbumsFetched(List<Album> albumList) {
+    public void onPostCommentsFetched(final List<PostComments> postCommentsList) {
         getView().hideLoadingBar();
-        getView().onAlbumsFetched(albumList);
+       getView().onPostCommentsFetched(postCommentsList);
     }
 
-    void fetchAlbums() {
-        albumModel.fetchAlbums();
+    void fetchComments(Integer postId) {
+        postDetailsModel.fetchComments(postId);
     }
 
     @Override
     public void noNetworkError() {
         super.noNetworkError();
-        getView().showSnackbarLong(YasmaApplication.getInstance().getString(R.string.no_network_error));
+        getView().hideLoadingBar();
     }
-
 }
