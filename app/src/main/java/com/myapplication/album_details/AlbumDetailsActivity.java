@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.myapplication.Constants;
+import com.myapplication.utils.Constants;
 import com.myapplication.R;
 import com.myapplication.base.BaseActivity;
 import com.myapplication.data.model.AlbumDetail;
@@ -27,7 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AlbumDetailsActivity extends BaseActivity implements AlbumDetailsView, AlbumDetailsAdapter.OnAlbumSelectedListener {
+public class AlbumDetailsActivity extends BaseActivity implements AlbumDetailsView, AlbumDetailsAdapter.OnAlbumSelectedListener, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -39,9 +40,12 @@ public class AlbumDetailsActivity extends BaseActivity implements AlbumDetailsVi
     ProgressBar pbProgress;
     @BindView(R.id.root_view)
     ConstraintLayout rootView;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private AlbumDetailsPresenter albumDetailsPresenter;
     private AlbumDetailsAdapter albumDetailsAdapter;
+    private int albumId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,9 +53,11 @@ public class AlbumDetailsActivity extends BaseActivity implements AlbumDetailsVi
         setContentView(R.layout.activity_album_details);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        swipeRefreshLayout.setOnRefreshListener(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         albumDetailsPresenter = new AlbumDetailsPresenter(this);
-        int albumId = getIntent().getIntExtra(Constants.IntentConstants.ALBUM_ID, 0);
+        albumId = getIntent().getIntExtra(Constants.IntentConstants.ALBUM_ID, 0);
+        showLoadingBar();
         albumDetailsPresenter.fetAlbumDetails(albumId);
         setUpRecyclerView();
     }
@@ -84,11 +90,15 @@ public class AlbumDetailsActivity extends BaseActivity implements AlbumDetailsVi
     @Override
     public void hideLoadingBar() {
         pbProgress.setVisibility(View.GONE);
+        if (swipeRefreshLayout.isRefreshing())
+            swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void showSpecificError(FailureResponse failureResponse) {
         super.showSpecificError(failureResponse);
+        if (swipeRefreshLayout.isRefreshing())
+            swipeRefreshLayout.setRefreshing(false);
         hideLoadingBar();
     }
 
@@ -114,5 +124,11 @@ public class AlbumDetailsActivity extends BaseActivity implements AlbumDetailsVi
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
+        albumDetailsPresenter.fetAlbumDetails(albumId);
     }
 }

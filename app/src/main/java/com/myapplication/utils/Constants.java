@@ -1,4 +1,4 @@
-package com.myapplication;
+package com.myapplication.utils;
 
 public interface Constants {
     interface IntentConstants{

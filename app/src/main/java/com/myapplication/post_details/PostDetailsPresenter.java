@@ -45,7 +45,6 @@ public class PostDetailsPresenter extends BasePresenter<PostDetailsView> impleme
     }
 
     void fetchComments(Integer postId) {
-        getView().showLoadingBar();
         postDetailsModel.fetchComments(postId);
     }
 

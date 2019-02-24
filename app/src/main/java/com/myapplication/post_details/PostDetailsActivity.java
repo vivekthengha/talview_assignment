@@ -4,21 +4,19 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.myapplication.Constants;
+import com.myapplication.utils.Constants;
 import com.myapplication.R;
-import com.myapplication.YasmaApplication;
 import com.myapplication.base.BaseActivity;
-import com.myapplication.data.db.YasmaDatabase;
 import com.myapplication.data.model.Post;
 import com.myapplication.data.model.PostComments;
 import com.myapplication.network.FailureResponse;
@@ -28,12 +26,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.MaybeObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
-public class PostDetailsActivity extends BaseActivity implements PostDetailsView{
+public class PostDetailsActivity extends BaseActivity implements PostDetailsView, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -49,9 +43,12 @@ public class PostDetailsActivity extends BaseActivity implements PostDetailsView
     CoordinatorLayout rootView;
     @BindView(R.id.pb_progress)
     ProgressBar pbProgressbar;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private PostDetailsPresenter postDetailsPresenter;
     private PostCommentsAdapter postCommentsAdapter;
+    private Post post;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,10 +56,12 @@ public class PostDetailsActivity extends BaseActivity implements PostDetailsView
         setContentView(R.layout.activity_post_details);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        swipeRefreshLayout.setOnRefreshListener(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         postDetailsPresenter = new PostDetailsPresenter(this);
 
-        Post post = getIntent().getParcelableExtra(Constants.IntentConstants.POST);
+        post = getIntent().getParcelableExtra(Constants.IntentConstants.POST);
+        showLoadingBar();
         postDetailsPresenter.fetchComments(post.getId());
 
         setData(post);
@@ -112,20 +111,28 @@ public class PostDetailsActivity extends BaseActivity implements PostDetailsView
 
     @Override
     public void hideLoadingBar() {
+        if (swipeRefreshLayout.isRefreshing())
+            swipeRefreshLayout.setRefreshing(false);
         pbProgressbar.setVisibility(View.GONE);
     }
 
     @Override
     public void showSpecificError(FailureResponse failureResponse) {
         super.showSpecificError(failureResponse);
+        if (swipeRefreshLayout.isRefreshing())
+            swipeRefreshLayout.setRefreshing(false);
         hideLoadingBar();
     }
-
-
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         postDetailsPresenter.destroy();
+    }
+
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
+        postDetailsPresenter.fetchComments(post.getId());
     }
 }

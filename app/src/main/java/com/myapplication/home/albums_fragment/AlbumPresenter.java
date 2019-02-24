@@ -48,7 +48,6 @@ public class AlbumPresenter extends BasePresenter<AlbumView> implements AlbumMod
     }
 
     void fetchAlbums() {
-        getView().showLoadingBar();
         albumModel.fetchAlbums();
     }
 

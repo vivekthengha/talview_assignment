@@ -47,7 +47,6 @@ public class PostPresenter extends BasePresenter<PostView> implements PostModelL
     }
 
     public void fetchPosts() {
-        getView().showLoadingBar();
         postModel.fetchPosts();
     }
 

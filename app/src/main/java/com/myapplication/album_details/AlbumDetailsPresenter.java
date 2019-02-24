@@ -27,7 +27,6 @@ public class AlbumDetailsPresenter extends BasePresenter<AlbumDetailsView> imple
     }
 
     void fetAlbumDetails(Integer albumId) {
-        getView().showLoadingBar();
         albumDetailsModel.fetchAlbumDetails(albumId);
     }
 
