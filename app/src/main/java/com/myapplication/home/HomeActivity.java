@@ -34,7 +34,6 @@ public class HomeActivity extends BaseActivity implements PostFragment.PostFragm
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getString(R.string.txt_yasma));
         setUpViewPager();
     }
 
