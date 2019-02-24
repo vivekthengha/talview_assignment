@@ -40,11 +40,11 @@ public class PostDetailsPresenter extends BasePresenter<PostDetailsView> impleme
 
     @Override
     public void onPostCommentsFetched(final List<PostComments> postCommentsList) {
+        getView().hideLoadingBar();
        getView().onPostCommentsFetched(postCommentsList);
     }
 
     void fetchComments(Integer postId) {
-        getView().showLoadingBar();
         postDetailsModel.fetchComments(postId);
     }
 

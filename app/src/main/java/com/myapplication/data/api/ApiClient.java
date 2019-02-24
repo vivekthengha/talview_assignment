@@ -28,7 +28,7 @@ interface ApiClient {
      * @return will return list of posts in single emission
      */
     @GET("posts/{post_id}/comments")
-    Single<Response<List<PostComments>>> fetchComments(@Path("post_id") int post_id);
+    Single<Response<List<PostComments>>> fetchComments(@Path("post_id") int postId);
 
     /**
      * api to fetch albums from server
@@ -41,7 +41,7 @@ interface ApiClient {
      * api to fetch albums from server
      * @return will return list of albums in single emission
      */
-    @GET("albums/{albumId}/photos")
+    @GET("albums/{album_id}/photos")
     Single<Response<List<AlbumDetail>>> fetchAlbumDetails(@Path("album_id") int albumId);
 
 }

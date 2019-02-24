@@ -1,47 +1,33 @@
 package com.myapplication.album_details;
 
 import com.myapplication.base.BasePresenter;
-import com.myapplication.data.model.PostComments;
-import com.myapplication.post_details.PostDetailsModel;
-import com.myapplication.post_details.PostDetailsModelListener;
-import com.myapplication.post_details.PostDetailsView;
+import com.myapplication.data.model.AlbumDetail;
 
 import java.util.List;
 
-import io.reactivex.disposables.Disposable;
+public class AlbumDetailsPresenter extends BasePresenter<AlbumDetailsView> implements AlbumDetailsModelListener{
 
-public class AlbumDetailsPresenter extends BasePresenter<AlbumDetailsView> implements AlbumDetailsView{
+    private AlbumDetailsModel albumDetailsModel;
 
-    private PostDetailsModel postDetailsModel;
-    private Disposable disposable;
-
-    AlbumDetailsPresenter(PostDetailsView view) {
+    AlbumDetailsPresenter(AlbumDetailsView view) {
         super(view);
     }
 
     @Override
     protected void setModel() {
-        postDetailsModel = new PostDetailsModel(this);
-        postDetailsModel.init();
+        albumDetailsModel = new AlbumDetailsModel(this);
+        albumDetailsModel.init();
     }
 
     @Override
     protected void destroy() {
-        postDetailsModel.detachListener();
-        postDetailsModel.dispose();
-        if (disposable != null)
-            disposable.dispose();
-        postDetailsModel = null;
+        albumDetailsModel.detachListener();
+        albumDetailsModel.dispose();
+        albumDetailsModel = null;
     }
 
-    @Override
-    public void onPostCommentsFetched(final List<PostComments> postCommentsList) {
-       getView().onPostCommentsFetched(postCommentsList);
-    }
-
-    void fetchComments(Integer postId) {
-        getView().showLoadingBar();
-        postDetailsModel.fetchComments(postId);
+    void fetAlbumDetails(Integer albumId) {
+        albumDetailsModel.fetchAlbumDetails(albumId);
     }
 
     @Override
@@ -49,4 +35,11 @@ public class AlbumDetailsPresenter extends BasePresenter<AlbumDetailsView> imple
         super.noNetworkError();
         getView().hideLoadingBar();
     }
+
+    @Override
+    public void onAlbumDetailsFetched(List<AlbumDetail> albumDetailList) {
+        getView().hideLoadingBar();
+        getView().onAlbumDetailsFetched(albumDetailList);
+    }
+
 }
