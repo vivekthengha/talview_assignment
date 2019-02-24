@@ -27,8 +27,8 @@ interface ApiClient {
      * api to fetch posts from server
      * @return will return list of posts in single emission
      */
-    @GET("posts/{postId}/comments")
-    Single<Response<List<PostComments>>> fetchComments(@Path("post_id") int postId);
+    @GET("posts/{post_id}/comments")
+    Single<Response<List<PostComments>>> fetchComments(@Path("post_id") int post_id);
 
     /**
      * api to fetch albums from server

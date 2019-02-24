@@ -2,6 +2,7 @@ package com.myapplication.home.posts_fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.myapplication.Constants;
 import com.myapplication.R;
 import com.myapplication.YasmaApplication;
 import com.myapplication.base.BaseFragment;
@@ -20,6 +22,7 @@ import com.myapplication.data.db.YasmaDatabase;
 import com.myapplication.data.model.Post;
 import com.myapplication.home.HomeActivity;
 import com.myapplication.network.FailureResponse;
+import com.myapplication.post_details.PostDetailsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -142,20 +145,18 @@ public class PostFragment extends Fragment implements PostView, PostAdapter.Post
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        postPresenter.destroy();
     }
 
     @Override
     public void onPostSelected(Post post) {
-
+        Intent postDetailsIntent = new Intent(getContext(), PostDetailsActivity.class);
+        postDetailsIntent.putExtra(Constants.IntentConstants.POST,post);
+        startActivity(postDetailsIntent);
     }
 
     public interface PostFragmentInteractionListener {
         void showSnackBar(String message);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        postPresenter.destroy();
-    }
 }

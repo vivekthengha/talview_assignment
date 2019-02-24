@@ -4,19 +4,36 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.myapplication.Constants;
 import com.myapplication.R;
+import com.myapplication.YasmaApplication;
 import com.myapplication.base.BaseActivity;
+import com.myapplication.data.db.YasmaDatabase;
+import com.myapplication.data.model.Post;
+import com.myapplication.data.model.PostComments;
+import com.myapplication.network.FailureResponse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.MaybeObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
-public class PostDetailsActivity extends BaseActivity {
+public class PostDetailsActivity extends BaseActivity implements PostDetailsView{
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -30,6 +47,13 @@ public class PostDetailsActivity extends BaseActivity {
     NestedScrollView nestedScrollView;
     @BindView(R.id.root_view)
     CoordinatorLayout rootView;
+    @BindView(R.id.pb_progress)
+    ProgressBar pbProgressbar;
+
+    private PostDetailsPresenter postDetailsPresenter;
+    private PostCommentsAdapter postCommentsAdapter;
+    private  Disposable disposable;
+    private Post post;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,6 +62,29 @@ public class PostDetailsActivity extends BaseActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        postDetailsPresenter = new PostDetailsPresenter(this);
+
+        post = getIntent().getParcelableExtra(Constants.IntentConstants.POST);
+        postDetailsPresenter.fetchComments(post.getId());
+
+        setData(post);
+
+        setUpRecyclerView();
+    }
+
+    private void setData(Post post) {
+        tvBody.setText(post.getBody());
+        tvTitle.setText(post.getTitle());
+    }
+
+    private void setUpRecyclerView() {
+        postCommentsAdapter = new PostCommentsAdapter(new ArrayList<PostComments>());
+        rvComments.setNestedScrollingEnabled(false);
+        rvComments.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvComments.addItemDecoration(new DividerItemDecoration(this,linearLayoutManager.getOrientation()));
+        rvComments.setLayoutManager(linearLayoutManager);
+        rvComments.setAdapter(postCommentsAdapter);
     }
 
     @Override
@@ -53,5 +100,97 @@ public class PostDetailsActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPostCommentsFetched(List<PostComments> postCommentsList) {
+        hideLoadingBar();
+        YasmaDatabase.getInstance(YasmaApplication.getInstance()).postDao().getPostComments(post.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new MaybeObserver<List<PostComments>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposable = d;
+                    }
+
+                    @Override
+                    public void onSuccess(List<PostComments> postCommentsList) {
+                        if (postCommentsList.size() == 0) {
+                            PostDetailsActivity.super.showNoNetworkError();
+                        }else {
+                            postCommentsAdapter.addComments(postCommentsList);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d("No","no network");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d("No","complete");
+                    }
+                });
+    }
+
+    @Override
+    public void showNoNetworkError() {
+        hideLoadingBar();
+        YasmaDatabase.getInstance(YasmaApplication.getInstance()).postDao().getPostComments(post.getId())
+                .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new MaybeObserver<List<PostComments>>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                disposable = d;
+                            }
+
+                            @Override
+                            public void onSuccess(List<PostComments> postCommentsList) {
+                                if (postCommentsList.size() == 0) {
+                                   PostDetailsActivity.super.showNoNetworkError();
+                                }else {
+                                    postCommentsAdapter.addComments(postCommentsList);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.d("No","no network");
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                Log.d("No","complete");
+                            }
+                        });
+    }
+
+    @Override
+    public void showLoadingBar() {
+        pbProgressbar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadingBar() {
+        pbProgressbar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showSpecificError(FailureResponse failureResponse) {
+        super.showSpecificError(failureResponse);
+        hideLoadingBar();
+    }
+
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (disposable!=null)
+            disposable.dispose();
+        postDetailsPresenter.destroy();
     }
 }

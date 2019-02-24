@@ -39,7 +39,7 @@ public class AlbumFragment extends Fragment implements AlbumView, AlbumAdapter.A
     Unbinder unbinder;
 
     private AlbumFragmentInteractionListener listener;
-    private AlbumPresenter postPresenter;
+    private AlbumPresenter albumPresenter;
     private AlbumAdapter albumAdapter;
     private List<Album> albumList = new ArrayList<>();
 
@@ -63,8 +63,8 @@ public class AlbumFragment extends Fragment implements AlbumView, AlbumAdapter.A
         View view = inflater.inflate(R.layout.fragment_albums, container, false);
         unbinder = ButterKnife.bind(this, view);
         setUpRecyclerView();
-        postPresenter = new AlbumPresenter(this);
-        postPresenter.fetchPosts();
+        albumPresenter = new AlbumPresenter(this);
+        albumPresenter.fetchPosts();
         return view;
     }
 
@@ -154,6 +154,6 @@ public class AlbumFragment extends Fragment implements AlbumView, AlbumAdapter.A
     @Override
     public void onDestroy() {
         super.onDestroy();
-        postPresenter.destroy();
+        albumPresenter.destroy();
     }
 }

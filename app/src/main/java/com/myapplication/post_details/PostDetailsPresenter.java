@@ -19,13 +19,14 @@ public class PostDetailsPresenter extends BasePresenter<PostDetailsView> impleme
     private PostDetailsModel postDetailsModel;
     private Disposable disposable;
 
-    public PostDetailsPresenter(PostDetailsView view) {
+    PostDetailsPresenter(PostDetailsView view) {
         super(view);
     }
 
     @Override
     protected void setModel() {
         postDetailsModel = new PostDetailsModel(this);
+        postDetailsModel.init();
     }
 
     @Override
@@ -63,5 +64,10 @@ public class PostDetailsPresenter extends BasePresenter<PostDetailsView> impleme
 
                     }
                 });
+    }
+
+    void fetchComments(Integer postId) {
+        getView().showLoadingBar();
+        postDetailsModel.fetchComments(postId);
     }
 }
