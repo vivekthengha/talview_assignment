@@ -2,6 +2,7 @@ package com.myapplication.home.posts_fragment;
 
 import android.annotation.SuppressLint;
 
+import com.myapplication.R;
 import com.myapplication.YasmaApplication;
 import com.myapplication.base.BasePresenter;
 import com.myapplication.data.db.YasmaDatabase;
@@ -50,4 +51,9 @@ public class PostPresenter extends BasePresenter<PostView> implements PostModelL
         postModel.fetchPosts();
     }
 
+    @Override
+    public void noNetworkError() {
+        super.noNetworkError();
+        getView().showSnackbarLong(YasmaApplication.getInstance().getString(R.string.no_network_error));
+    }
 }

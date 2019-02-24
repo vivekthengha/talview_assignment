@@ -2,6 +2,7 @@ package com.myapplication.home.albums_fragment;
 
 import android.annotation.SuppressLint;
 
+import com.myapplication.R;
 import com.myapplication.YasmaApplication;
 import com.myapplication.base.BasePresenter;
 import com.myapplication.data.db.YasmaDatabase;
@@ -49,6 +50,12 @@ public class AlbumPresenter extends BasePresenter<AlbumView> implements AlbumMod
 
     void fetchAlbums() {
         albumModel.fetchAlbums();
+    }
+
+    @Override
+    public void noNetworkError() {
+        super.noNetworkError();
+        getView().showSnackbarLong(YasmaApplication.getInstance().getString(R.string.no_network_error));
     }
 
 }
