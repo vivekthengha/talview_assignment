@@ -1,6 +1,7 @@
 package com.myapplication.home.albums_fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.myapplication.Constants;
 import com.myapplication.R;
+import com.myapplication.album_details.AlbumDetailsActivity;
 import com.myapplication.data.model.Album;
 import com.myapplication.home.HomeActivity;
 import com.myapplication.network.FailureResponse;
@@ -112,7 +115,9 @@ public class AlbumFragment extends Fragment implements AlbumView, AlbumAdapter.A
 
     @Override
     public void onAlbumSelected(Album album) {
-
+        Intent intent = new Intent(getContext(), AlbumDetailsActivity.class);
+        intent.putExtra(Constants.IntentConstants.ALBUM_ID,album.getId());
+        startActivity(intent);
     }
 
     public interface AlbumFragmentInteractionListener {

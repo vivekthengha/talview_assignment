@@ -102,7 +102,6 @@ public class PostDetailsActivity extends BaseActivity implements PostDetailsView
 
     @Override
     public void onPostCommentsFetched(List<PostComments> postCommentsList) {
-        hideLoadingBar();
         postCommentsAdapter.addComments(postCommentsList);
     }
 

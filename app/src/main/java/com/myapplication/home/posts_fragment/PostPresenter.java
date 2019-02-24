@@ -40,7 +40,9 @@ public class PostPresenter extends BasePresenter<PostView> implements PostModelL
         postModel = null;
     }
 
+    @Override
     public void onPostsFetched(List<Post> postList) {
+        getView().hideLoadingBar();
        getView().onPostsFetched(postList);
     }
 

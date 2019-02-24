@@ -41,9 +41,9 @@ public class AlbumPresenter extends BasePresenter<AlbumView> implements AlbumMod
         albumModel = null;
     }
 
-    @SuppressLint("CheckResult")
     @Override
     public void onAlbumsFetched(List<Album> albumList) {
+        getView().hideLoadingBar();
         getView().onAlbumsFetched(albumList);
     }
 

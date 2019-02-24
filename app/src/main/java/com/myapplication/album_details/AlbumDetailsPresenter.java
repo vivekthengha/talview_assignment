@@ -39,6 +39,7 @@ public class AlbumDetailsPresenter extends BasePresenter<AlbumDetailsView> imple
 
     @Override
     public void onAlbumDetailsFetched(List<AlbumDetail> albumDetailList) {
+        getView().hideLoadingBar();
         getView().onAlbumDetailsFetched(albumDetailList);
     }
 

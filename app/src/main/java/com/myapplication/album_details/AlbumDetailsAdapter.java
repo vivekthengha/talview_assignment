@@ -53,6 +53,12 @@ public class AlbumDetailsAdapter extends RecyclerView.Adapter<AlbumDetailsAdapte
         return albumDetailsList.size();
     }
 
+    public void addAlbumList(List<AlbumDetail> albumDetailsList) {
+        this.albumDetailsList.clear();
+        this.albumDetailsList.addAll(albumDetailsList);
+        notifyDataSetChanged();
+    }
+
     class AlbumDetailsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.iv_album)
         ImageView ivAlbum;
@@ -66,11 +72,11 @@ public class AlbumDetailsAdapter extends RecyclerView.Adapter<AlbumDetailsAdapte
 
         @Override
         public void onClick(View view) {
-            onAlbumSelectedListener.onAlbumSelected(albumDetailsList.get(getAdapterPosition()));
+            onAlbumSelectedListener.onAlbumSelected(albumDetailsList.get(getAdapterPosition()),ivAlbum);
         }
 
         public void bind(AlbumDetail albumDetail) {
-            Glide.with(ivAlbum.getContext()).load(ivAlbum)
+            Glide.with(ivAlbum.getContext()).load(albumDetail.getUrl())
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.ALL))
                     .listener(new RequestListener<Drawable>() {
@@ -91,7 +97,7 @@ public class AlbumDetailsAdapter extends RecyclerView.Adapter<AlbumDetailsAdapte
     }
 
     public interface OnAlbumSelectedListener {
-        void onAlbumSelected(AlbumDetail albumDetail);
+        void onAlbumSelected(AlbumDetail albumDetail, View view);
     }
 
 }
