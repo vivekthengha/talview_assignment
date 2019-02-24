@@ -8,4 +8,5 @@
     <string name="txt_albums">Albums</string>
     <string name="txt_post_details">Post Details</string>
     <string name="txt_comments">Comments</string>
+    <string name="txt_album_details">Album Details</string>
 </resources>

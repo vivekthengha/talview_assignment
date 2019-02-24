@@ -52,8 +52,6 @@ public class PostDetailsActivity extends BaseActivity implements PostDetailsView
 
     private PostDetailsPresenter postDetailsPresenter;
     private PostCommentsAdapter postCommentsAdapter;
-    private  Disposable disposable;
-    private Post post;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +62,7 @@ public class PostDetailsActivity extends BaseActivity implements PostDetailsView
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         postDetailsPresenter = new PostDetailsPresenter(this);
 
-        post = getIntent().getParcelableExtra(Constants.IntentConstants.POST);
+        Post post = getIntent().getParcelableExtra(Constants.IntentConstants.POST);
         postDetailsPresenter.fetchComments(post.getId());
 
         setData(post);
@@ -129,8 +127,6 @@ public class PostDetailsActivity extends BaseActivity implements PostDetailsView
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (disposable!=null)
-            disposable.dispose();
         postDetailsPresenter.destroy();
     }
 }

@@ -39,7 +39,7 @@ public class AlbumDetailsModel extends BaseModel<AlbumDetailsModelListener> {
     }
 
     @SuppressLint("CheckResult")
-    public void fetchComments(final int albumId) {
+    public void fetchAlbumDetails(final int albumId) {
         compositeDisposable.add(getDataManager().fetchAlbumDetails(albumId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new NetworkResponse<List<AlbumDetail>>(this) {

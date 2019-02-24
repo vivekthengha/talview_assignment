@@ -2,18 +2,12 @@ package com.myapplication.album_details;
 
 import com.myapplication.base.BasePresenter;
 import com.myapplication.data.model.AlbumDetail;
-import com.myapplication.data.model.PostComments;
-import com.myapplication.post_details.PostDetailsModel;
-import com.myapplication.post_details.PostDetailsModelListener;
-import com.myapplication.post_details.PostDetailsView;
 
 import java.util.List;
 
-import io.reactivex.disposables.Disposable;
-
 public class AlbumDetailsPresenter extends BasePresenter<AlbumDetailsView> implements AlbumDetailsModelListener{
 
-    private AlbumDetailsModel postDetailsModel;
+    private AlbumDetailsModel albumDetailsModel;
 
     AlbumDetailsPresenter(AlbumDetailsView view) {
         super(view);
@@ -21,22 +15,20 @@ public class AlbumDetailsPresenter extends BasePresenter<AlbumDetailsView> imple
 
     @Override
     protected void setModel() {
-        postDetailsModel = new AlbumDetailsModel(this);
-        postDetailsModel.init();
+        albumDetailsModel = new AlbumDetailsModel(this);
+        albumDetailsModel.init();
     }
 
     @Override
     protected void destroy() {
-        postDetailsModel.detachListener();
-        postDetailsModel.dispose();
-        postDetailsModel = null;
+        albumDetailsModel.detachListener();
+        albumDetailsModel.dispose();
+        albumDetailsModel = null;
     }
 
-
-
-    void fetchComments(Integer postId) {
+    void fetAlbumDetails(Integer albumId) {
         getView().showLoadingBar();
-        postDetailsModel.fetchComments(postId);
+        albumDetailsModel.fetchAlbumDetails(albumId);
     }
 
     @Override
