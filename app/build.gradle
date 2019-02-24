@@ -46,6 +46,7 @@ dependencies {
 
     // RxJava support for Room
     implementation "android.arch.persistence.room:rxjava2:1.1.1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
     // Testing support
     androidTestImplementation "android.arch.core:core-testing:1.1.1"
 }

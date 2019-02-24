@@ -13,6 +13,8 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 /**
  * Data access object class to be used for accessing data from database.
@@ -27,7 +29,7 @@ public interface PostDao {
      * @param posts the user to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    Completable insertPosts(List<Post> posts);
+    void insertPosts(List<Post> posts);
 
     /**
      * Get the album posts list from the table. This query gets all the posts list from the table.
@@ -35,8 +37,8 @@ public interface PostDao {
      *
      * @return the user from the table
      */
-    @Query("SELECT * FROM Albums")
-    Flowable<List<Post>> getPosts();
+    @Query("SELECT * FROM POSTS")
+    Maybe<List<Post>> getPosts();
 
 
  /**
@@ -45,7 +47,7 @@ public interface PostDao {
      * @param posts the user to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    Completable insertPostComments(List<PostComments> posts);
+    void insertPostComments(List<PostComments> posts);
 
     /**
      * Get the album post comments list from the table. This query gets all the comments for particular posts from the table.
@@ -53,7 +55,7 @@ public interface PostDao {
      *
      * @return the user from the table
      */
-    @Query("SELECT * FROM PostComments")
-    Flowable<List<PostComments>> getPostComments();
+    @Query("SELECT * FROM PostComments WHERE postId = :postId")
+    Maybe<List<PostComments>> getPostComments(int postId);
 
 }

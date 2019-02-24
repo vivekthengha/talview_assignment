@@ -31,6 +31,7 @@ public abstract class BaseModel<T extends BaseModelListener> implements CommonRe
     }
 
     public abstract void init();
+    public abstract void dispose();
 
     private void noNetworkAvailableError() {
         getListener().noNetworkError();

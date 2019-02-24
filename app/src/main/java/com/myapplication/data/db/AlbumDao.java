@@ -12,6 +12,8 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 /**
  * Data access object class to be used for accessing data from database.
@@ -26,7 +28,7 @@ public interface AlbumDao {
      * @param albums the albums to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    Completable insertAlbums(List<Album> albums);
+    void insertAlbums(List<Album> albums);
 
     /**
      * Get the albums from the table. This query gets all users from the table.
@@ -35,7 +37,7 @@ public interface AlbumDao {
      * @return the user from the table
      */
     @Query("SELECT * FROM Albums")
-    Flowable<List<Album>> getAlbums();
+    Maybe<List<Album>> getAlbums();
 
     /**
      * Insert album details list in the database. If the album already exists, replace it.
@@ -43,7 +45,7 @@ public interface AlbumDao {
      * @param albumDetails the details to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    Completable insertAlbumDetails(List<AlbumDetail> albumDetails);
+    void insertAlbumDetails(List<AlbumDetail> albumDetails);
 
     /**
      * Get the album details list from the table. This query gets all the photos list from the table.
@@ -51,7 +53,7 @@ public interface AlbumDao {
      *
      * @return the user from the table
      */
-    @Query("SELECT * FROM Albums")
-    Flowable<List<AlbumDetail>> getAlbumDetails();
+    @Query("SELECT * FROM AlbumDetails")
+    Maybe<List<AlbumDetail>> getAlbumDetails();
 
 }
