@@ -1,6 +1,7 @@
 package com.myapplication.album_details;
 
 import com.myapplication.base.BasePresenter;
+import com.myapplication.data.model.AlbumDetail;
 import com.myapplication.data.model.PostComments;
 import com.myapplication.post_details.PostDetailsModel;
 import com.myapplication.post_details.PostDetailsModelListener;
@@ -10,18 +11,17 @@ import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 
-public class AlbumDetailsPresenter extends BasePresenter<AlbumDetailsView> implements AlbumDetailsView{
+public class AlbumDetailsPresenter extends BasePresenter<AlbumDetailsView> implements AlbumDetailsModelListener{
 
-    private PostDetailsModel postDetailsModel;
-    private Disposable disposable;
+    private AlbumDetailsModel postDetailsModel;
 
-    AlbumDetailsPresenter(PostDetailsView view) {
+    AlbumDetailsPresenter(AlbumDetailsView view) {
         super(view);
     }
 
     @Override
     protected void setModel() {
-        postDetailsModel = new PostDetailsModel(this);
+        postDetailsModel = new AlbumDetailsModel(this);
         postDetailsModel.init();
     }
 
@@ -29,15 +29,10 @@ public class AlbumDetailsPresenter extends BasePresenter<AlbumDetailsView> imple
     protected void destroy() {
         postDetailsModel.detachListener();
         postDetailsModel.dispose();
-        if (disposable != null)
-            disposable.dispose();
         postDetailsModel = null;
     }
 
-    @Override
-    public void onPostCommentsFetched(final List<PostComments> postCommentsList) {
-       getView().onPostCommentsFetched(postCommentsList);
-    }
+
 
     void fetchComments(Integer postId) {
         getView().showLoadingBar();
@@ -49,4 +44,10 @@ public class AlbumDetailsPresenter extends BasePresenter<AlbumDetailsView> imple
         super.noNetworkError();
         getView().hideLoadingBar();
     }
+
+    @Override
+    public void onAlbumDetailsFetched(List<AlbumDetail> albumDetailList) {
+        getView().onAlbumDetailsFetched(albumDetailList);
+    }
+
 }
