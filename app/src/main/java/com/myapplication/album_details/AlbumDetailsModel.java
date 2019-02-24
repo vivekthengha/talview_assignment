@@ -1,4 +1,4 @@
-package com.myapplication.post_details;
+package com.myapplication.album_details;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
@@ -6,9 +6,11 @@ import android.util.Log;
 import com.myapplication.YasmaApplication;
 import com.myapplication.base.BaseModel;
 import com.myapplication.data.db.YasmaDatabase;
+import com.myapplication.data.model.AlbumDetail;
 import com.myapplication.data.model.PostComments;
 import com.myapplication.network.FailureResponse;
 import com.myapplication.network.NetworkResponse;
+import com.myapplication.post_details.PostDetailsModelListener;
 
 import java.util.List;
 
@@ -21,13 +23,13 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
-public class PostDetailsModel extends BaseModel<PostDetailsModelListener> {
+public class AlbumDetailsModel extends BaseModel<AlbumDetailsModelListener> {
 
     private static final String TAG = "PostDetailsModel";
 
     private CompositeDisposable compositeDisposable;
 
-    public PostDetailsModel(PostDetailsModelListener listener) {
+    public AlbumDetailsModel(AlbumDetailsModelListener listener) {
         super(listener);
     }
 
@@ -37,13 +39,13 @@ public class PostDetailsModel extends BaseModel<PostDetailsModelListener> {
     }
 
     @SuppressLint("CheckResult")
-    public void fetchComments(final int postId) {
-        compositeDisposable.add(getDataManager().fetchComments(postId).subscribeOn(Schedulers.io())
+    public void fetchComments(final int albumId) {
+        compositeDisposable.add(getDataManager().fetchAlbumDetails(albumId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new NetworkResponse<List<PostComments>>(this) {
+                .subscribeWith(new NetworkResponse<List<AlbumDetail>>(this) {
                     @Override
-                    public void onResponse(List<PostComments> postCommentsList) {
-                        insertIntoDb(postCommentsList, postId);
+                    public void onResponse(List<AlbumDetail> albumDetailList) {
+                        insertIntoDb(albumDetailList, albumId);
                     }
 
                     @Override
@@ -60,7 +62,7 @@ public class PostDetailsModel extends BaseModel<PostDetailsModelListener> {
                     @Override
                     public void onNetworkError() {
                         this.dispose();
-                        fetchCommentsFromDatabase(postId);
+                        fetchCommentsFromDatabase(albumId);
                     }
                 }));
     }
@@ -70,12 +72,12 @@ public class PostDetailsModel extends BaseModel<PostDetailsModelListener> {
         compositeDisposable.clear();
     }
 
-    public void insertIntoDb(final List<PostComments> postCommentsList, final int postId) {
+    public void insertIntoDb(final List<AlbumDetail> albumDetailList, final int albumId) {
         Completable.fromAction(new Action() {
             @Override
             public void run() throws Exception {
-                YasmaDatabase.getInstance(YasmaApplication.getInstance()).postDao()
-                        .insertPostComments(postCommentsList);
+                YasmaDatabase.getInstance(YasmaApplication.getInstance()).albumDao()
+                        .insertAlbumDetails(albumDetailList);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -88,7 +90,7 @@ public class PostDetailsModel extends BaseModel<PostDetailsModelListener> {
 
                     @Override
                     public void onComplete() {
-                        fetchCommentsFromDatabase(postId);
+                        fetchCommentsFromDatabase(albumId);
                     }
 
                     @Override
@@ -98,11 +100,11 @@ public class PostDetailsModel extends BaseModel<PostDetailsModelListener> {
                 });
     }
 
-    public void fetchCommentsFromDatabase(int postId) {
-        YasmaDatabase.getInstance(YasmaApplication.getInstance()).postDao().getPostComments(postId)
+    void fetchCommentsFromDatabase(int albumId) {
+        YasmaDatabase.getInstance(YasmaApplication.getInstance()).albumDao().getAlbumDetails(albumId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new MaybeObserver<List<PostComments>>() {
+                .subscribe(new MaybeObserver<List<AlbumDetail>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         if (d != null)
@@ -110,8 +112,8 @@ public class PostDetailsModel extends BaseModel<PostDetailsModelListener> {
                     }
 
                     @Override
-                    public void onSuccess(List<PostComments> postCommentsList) {
-                        getListener().onPostCommentsFetched(postCommentsList);
+                    public void onSuccess(List<AlbumDetail> albumDetailList) {
+                        getListener().onAlbumDetailsFetched(albumDetailList);
                     }
 
                     @Override

@@ -91,32 +91,6 @@ public class PostFragment extends Fragment implements PostView, PostAdapter.Post
     @Override
     public void showNoNetworkError() {
         hideLoadingBar();
-        YasmaDatabase.getInstance(YasmaApplication.getInstance()).postDao().getPosts()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new MaybeObserver<List<Post>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(List<Post> postList) {
-                        PostFragment.this.postList.clear();
-                        PostFragment.this.postList.addAll(postList);
-                        postAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
     }
 
     @Override

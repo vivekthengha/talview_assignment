@@ -43,36 +43,13 @@ public class AlbumPresenter extends BasePresenter<AlbumView> implements AlbumMod
 
     @SuppressLint("CheckResult")
     @Override
-    public void onAlbumsFetched(final List<Album> albumList) {
-        Completable.fromAction(new Action() {
-            @Override
-            public void run() throws Exception {
-                YasmaDatabase.getInstance(YasmaApplication.getInstance()).albumDao()
-                        .insertAlbums(albumList);
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposable = d;
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        getView().hideLoadingBar();
-                        getView().onAlbumsFetched(albumList);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().hideLoadingBar();
-                    }
-                });
+    public void onAlbumsFetched(List<Album> albumList) {
+        getView().onAlbumsFetched(albumList);
     }
 
-    public void fetchPosts() {
+    void fetchAlbums() {
         getView().showLoadingBar();
-        albumModel.fetchPosts();
+        albumModel.fetchAlbums();
     }
 
 }

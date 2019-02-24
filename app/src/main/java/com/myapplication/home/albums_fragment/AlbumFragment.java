@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.myapplication.R;
-import com.myapplication.YasmaApplication;
-import com.myapplication.data.db.YasmaDatabase;
 import com.myapplication.data.model.Album;
 import com.myapplication.home.HomeActivity;
 import com.myapplication.network.FailureResponse;
@@ -25,10 +23,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.MaybeObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class AlbumFragment extends Fragment implements AlbumView, AlbumAdapter.AlbumItemSelectedListener {
 
@@ -64,7 +58,7 @@ public class AlbumFragment extends Fragment implements AlbumView, AlbumAdapter.A
         unbinder = ButterKnife.bind(this, view);
         setUpRecyclerView();
         albumPresenter = new AlbumPresenter(this);
-        albumPresenter.fetchPosts();
+        albumPresenter.fetchAlbums();
         return view;
     }
 
@@ -86,32 +80,6 @@ public class AlbumFragment extends Fragment implements AlbumView, AlbumAdapter.A
     @Override
     public void showNoNetworkError() {
         hideLoadingBar();
-        YasmaDatabase.getInstance(YasmaApplication.getInstance()).albumDao().getAlbums()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new MaybeObserver<List<Album>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(List<Album> albumList) {
-                        AlbumFragment.this.albumList.clear();
-                        AlbumFragment.this.albumList.addAll(albumList);
-                        albumAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
     }
 
     @Override

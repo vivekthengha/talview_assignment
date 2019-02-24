@@ -40,33 +40,8 @@ public class PostPresenter extends BasePresenter<PostView> implements PostModelL
         postModel = null;
     }
 
-    @SuppressLint("CheckResult")
-    @Override
-    public void onPostsFetched(final List<Post> postList) {
-        Completable.fromAction(new Action() {
-            @Override
-            public void run() throws Exception {
-                YasmaDatabase.getInstance(YasmaApplication.getInstance()).postDao()
-                        .insertPosts(postList);
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposable = d;
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        getView().hideLoadingBar();
-                        getView().onPostsFetched(postList);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().hideLoadingBar();
-                    }
-                });
+    public void onPostsFetched(List<Post> postList) {
+       getView().onPostsFetched(postList);
     }
 
     public void fetchPosts() {

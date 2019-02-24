@@ -105,67 +105,7 @@ public class PostDetailsActivity extends BaseActivity implements PostDetailsView
     @Override
     public void onPostCommentsFetched(List<PostComments> postCommentsList) {
         hideLoadingBar();
-        YasmaDatabase.getInstance(YasmaApplication.getInstance()).postDao().getPostComments(post.getId())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new MaybeObserver<List<PostComments>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposable = d;
-                    }
-
-                    @Override
-                    public void onSuccess(List<PostComments> postCommentsList) {
-                        if (postCommentsList.size() == 0) {
-                            PostDetailsActivity.super.showNoNetworkError();
-                        }else {
-                            postCommentsAdapter.addComments(postCommentsList);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d("No","no network");
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d("No","complete");
-                    }
-                });
-    }
-
-    @Override
-    public void showNoNetworkError() {
-        hideLoadingBar();
-        YasmaDatabase.getInstance(YasmaApplication.getInstance()).postDao().getPostComments(post.getId())
-                .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new MaybeObserver<List<PostComments>>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-                                disposable = d;
-                            }
-
-                            @Override
-                            public void onSuccess(List<PostComments> postCommentsList) {
-                                if (postCommentsList.size() == 0) {
-                                   PostDetailsActivity.super.showNoNetworkError();
-                                }else {
-                                    postCommentsAdapter.addComments(postCommentsList);
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.d("No","no network");
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                Log.d("No","complete");
-                            }
-                        });
+        postCommentsAdapter.addComments(postCommentsList);
     }
 
     @Override

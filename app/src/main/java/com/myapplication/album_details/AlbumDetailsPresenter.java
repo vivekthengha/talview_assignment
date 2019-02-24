@@ -1,25 +1,21 @@
-package com.myapplication.post_details;
+package com.myapplication.album_details;
 
-import com.myapplication.YasmaApplication;
 import com.myapplication.base.BasePresenter;
-import com.myapplication.data.db.YasmaDatabase;
 import com.myapplication.data.model.PostComments;
+import com.myapplication.post_details.PostDetailsModel;
+import com.myapplication.post_details.PostDetailsModelListener;
+import com.myapplication.post_details.PostDetailsView;
 
 import java.util.List;
 
-import io.reactivex.Completable;
-import io.reactivex.CompletableObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.schedulers.Schedulers;
 
-public class PostDetailsPresenter extends BasePresenter<PostDetailsView> implements PostDetailsModelListener{
+public class AlbumDetailsPresenter extends BasePresenter<AlbumDetailsView> implements AlbumDetailsView{
 
     private PostDetailsModel postDetailsModel;
     private Disposable disposable;
 
-    PostDetailsPresenter(PostDetailsView view) {
+    AlbumDetailsPresenter(PostDetailsView view) {
         super(view);
     }
 
