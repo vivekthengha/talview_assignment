@@ -17,6 +17,11 @@
         <activity
             android:name=".home.HomeActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity android:name=".SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>
@@ -25,9 +30,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-        </activity>
-
-        <activity android:name=".SplashActivity">
         </activity>
 
         <activity android:name=".post_details.PostDetailsActivity"
