@@ -12,7 +12,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private Runnable runnable;
     private Handler handler;
-    private static final int DELAY = 3000;
+    private static final int DELAY = 2000;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
